@@ -3,6 +3,10 @@ var thrusterControl = require('./thrusterControl.js');  // dont know shouild be 
 var five = require("johnny-five");
 var board = new five.Board();
 
+var GamePad = require('./node-gamepad-master/node-gamepad-master/index');
+var controller = new GamePad('ps4/ds4_v2'); // dont know if right
+controller.connect();
+
 //var rpmTimer = (new Date().getTime());
 
 board.on("ready", function() {
@@ -24,9 +28,21 @@ board.on("ready", function() {
  		thrusterControl.readStatus(self, t1Addr);
 	}, 2000	);
 	
+	
+	controller.on("right:move", function(value){
+			var x = (value.x - 127)/ 127;
+			var y = -(value.y -127) / 127;
+			
+			
+			var t6Power = (y*0.5)+(x*0.5);
+			var t3Power = (-y*0.5)+(x*0.5);
+	
+	
 	setInterval(function() {
-		thrusterControl.thruster(self,t1Addr,0.9);
+		thrusterControl.thruster(self,t1Addr,x);
 	},6000);
+	
+	});
 	
 	setInterval(function() {
 		readVolatage(self,0);
@@ -81,11 +97,13 @@ function readStatus(brd, addr) {
 }
 */
 
-
+/*
 function ledBlink(board) {
 	setTimeout(board.digitalWrite(13,1),500);
 	setTimeout(board.digitalWrite(13,0),500);	
 }
+*/
+
 
 /*
 function thruster(board,addr,thrust) { // thrust range: -1~1
