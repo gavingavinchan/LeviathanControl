@@ -3,8 +3,8 @@ var thrusterControl = require('./thrusterControl.js');  // dont know shouild be 
 var five = require("johnny-five");
 var board = new five.Board();
 
-var GamePad = require('./node-gamepad-master/node-gamepad-master/index');
-var controller = new GamePad('ps4/ds4_v2'); // dont know if right
+var GamePad = require('node-gamepad');
+var controller = new GamePad('ps4/dualshock4'); // dont know if right
 controller.connect();
 
 //var rpmTimer = (new Date().getTime());
