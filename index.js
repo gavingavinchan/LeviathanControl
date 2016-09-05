@@ -30,17 +30,18 @@ board.on("ready", function() {
 	
 	
 	controller.on("right:move", function(value){
-			var x = (value.x - 127)/ 127;
-			var y = -(value.y -127) / 127;
-			
-			
-			var t6Power = (y*0.5)+(x*0.5);
-			var t3Power = (-y*0.5)+(x*0.5);
+		var x = (value.x - 127)/ 127;
+		var y = -(value.y -127) / 127;
+		
+		
+		var t6Power = (y*0.5)+(x*0.5);
+		var t3Power = (-y*0.5)+(x*0.5);
 	
-	
-	setInterval(function() {
-		thrusterControl.thruster(self,t1Addr,x);
-	},6000);
+		console.log("Y: " + y);
+		
+		setInterval(function() {
+			thrusterControl.thruster(self,t1Addr,x);
+		},6000);
 	
 	});
 	
