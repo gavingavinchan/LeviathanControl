@@ -1,5 +1,7 @@
 var rpmTimer = (new Date().getTime());
 
+var thruterSignalInterval = 250;
+var lastThrusterTimer = 0;
 
 exports.arduinoMap = function(value,fromLow,fromHigh,toLow,toHigh) {
 	var fromRange = fromHigh - fromLow;
@@ -10,11 +12,24 @@ exports.arduinoMap = function(value,fromLow,fromHigh,toLow,toHigh) {
 };
 
 exports.thruster = function (board,addr,thrust) { // thrust range: -1~1
-	var mappedThrust = exports.arduinoMap(thrust,-1,1,-32767,32767);
-	var b = exports.numberToByte(mappedThrust);
-	board.i2cWrite(addr, 0x00, [0,0]);
-	board.i2cWrite(addr, 0x00, b);
-	console.log("Thrust: ", mappedThrust, b);
+	
+	if(new Date().getTime() > lastThrusterTimer + thruterSignalInterval) {
+		var mappedThrust = exports.arduinoMap(thrust,-1,1,-32767,32767);
+		
+		if (mappedThrust>15000) mappedThrust = 15000;
+		else if (mappedThrust<-15000) mappedThrust = -15000;
+		
+		var b = exports.numberToByte(mappedThrust);
+		board.i2cWrite(addr, 0x00, [0,0]);
+		board.i2cWrite(addr, 0x00, b);
+		
+		console.log("Before lastThrusterTimer: " + lastThrusterTimer);
+		
+		console.log("Thrust: ", mappedThrust, b);
+		lastThrusterTimer = new Date().getTime();
+		
+		console.log("After lastThrusterTimer: " + lastThrusterTimer);
+	}
 };
 
 exports.numberToByte = function(x) {

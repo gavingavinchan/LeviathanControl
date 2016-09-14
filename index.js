@@ -19,35 +19,42 @@ board.on("ready", function() {
 	// Must called first b4 making any i2c connection
 	this.i2cConfig();
 	
-	var t1Addr = 0x29;
+	var t1Addr = 0x2F;
 	// Send power 0 to init the thruster
 	
 	var self = board;
 	
+	thrusterControl.thruster(self,t1Addr,0);
+	
+	
 	setInterval(function() {
- 		thrusterControl.readStatus(self, t1Addr);
+		thrusterControl.thruster(self, t1Addr, 15000);
+ 		//thrusterControl.readStatus(self, t1Addr);
 	}, 2000	);
 	
-	
+/*	
 	controller.on("right:move", function(value){
 		var x = (value.x - 127)/ 127;
 		var y = -(value.y -127) / 127;
 		
+		if(Math.abs(x)<0.05) {
+			x = 0;
+		}
+		
+		if(Math.abs(y)<0.05) {
+			y=0;
+		}
 		
 		var t6Power = (y*0.5)+(x*0.5);
 		var t3Power = (-y*0.5)+(x*0.5);
-	
-		console.log("Y: " + y);
 		
-		setInterval(function() {
-			thrusterControl.thruster(self,t1Addr,x);
-		},6000);
-	
+		//console.log("X: " + x);
+		//console.log("Y: " + y);
+		
+		//thrusterControl.thruster(self,t1Addr,0)
+		thrusterControl.thruster(self,t1Addr,x);
 	});
-	
-	setInterval(function() {
-		readVolatage(self,0);
-	},5000);
+	*/
 });
 
 /*
