@@ -19,7 +19,7 @@ board.on("ready", function() {
 	// Must called first b4 making any i2c connection
 	this.i2cConfig();
 	
-	var t1Addr = 0x2F;
+	var t1Addr = 0x31;
 	// Send power 0 to init the thruster
 	
 	var self = board;
@@ -28,7 +28,7 @@ board.on("ready", function() {
 	
 	
 	setInterval(function() {
-		thrusterControl.thruster(self, t1Addr, 15000);
+		thrusterControl.thruster(self, t1Addr, 1);
  		//thrusterControl.readStatus(self, t1Addr);
 	}, 2000	);
 	

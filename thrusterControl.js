@@ -1,6 +1,6 @@
 var rpmTimer = (new Date().getTime());
 
-var thruterSignalInterval = 250;
+var thruterSignalInterval = 1000;
 var lastThrusterTimer = 0;
 
 exports.arduinoMap = function(value,fromLow,fromHigh,toLow,toHigh) {
@@ -12,8 +12,21 @@ exports.arduinoMap = function(value,fromLow,fromHigh,toLow,toHigh) {
 };
 
 exports.thruster = function (board,addr,thrust) { // thrust range: -1~1
+	var signalDelay = 0;
 	
-	if(new Date().getTime() > lastThrusterTimer + thruterSignalInterval) {
+	//lastThrusterTimer = new Date().getTime();
+	signalDelay = lastThrusterTimer + thruterSignalInterval;
+	
+	console.log("<before>");
+	console.log("Date: " + new Date().getTime());
+	console.log("lastThrusterTimer: " + lastThrusterTimer);
+	console.log("lastThrusterTimer + thruterSignalInterval: " + signalDelay);
+	console.log("</before Loop>");
+	
+	
+	
+	if(new Date().getTime() > signalDelay) {
+		console.log("in loop");
 		var mappedThrust = exports.arduinoMap(thrust,-1,1,-32767,32767);
 		
 		if (mappedThrust>15000) mappedThrust = 15000;
