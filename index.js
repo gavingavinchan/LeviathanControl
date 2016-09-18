@@ -28,33 +28,39 @@ board.on("ready", function() {
 	
 	
 	setInterval(function() {
-		thrusterControl.thruster(self, t1Addr, 1);
+		//thrusterControl.thruster(self, t1Addr, 1);
  		//thrusterControl.readStatus(self, t1Addr);
 	}, 2000	);
 	
-/*	
+	
+	var rightX;
+	
 	controller.on("right:move", function(value){
-		var x = (value.x - 127)/ 127;
+		console.log("controller.on: Running");
+		
+		rightX = (value.x - 127)/ 127;
 		var y = -(value.y -127) / 127;
 		
-		if(Math.abs(x)<0.05) {
-			x = 0;
+		if(Math.abs(rightX)<0.1) {
+			rightX = 0;
 		}
 		
-		if(Math.abs(y)<0.05) {
+		if(Math.abs(y)<0.1) {
 			y=0;
 		}
 		
-		var t6Power = (y*0.5)+(x*0.5);
-		var t3Power = (-y*0.5)+(x*0.5);
+		//var t6Power = (y*0.5)+(x*0.5);
+		//var t3Power = (-y*0.5)+(x*0.5);
 		
 		//console.log("X: " + x);
 		//console.log("Y: " + y);
 		
 		//thrusterControl.thruster(self,t1Addr,0)
-		thrusterControl.thruster(self,t1Addr,x);
+		thrusterControl.thruster(self,t1Addr,rightX);
 	});
-	*/
+	
+	
+	thrusterControl.runLastInputAfterTime(self,t1Addr,rightX,250);
 });
 
 /*
