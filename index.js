@@ -41,11 +41,11 @@ board.on("ready", function() {
 		rightX = (value.x - 127)/ 127;
 		var y = -(value.y -127) / 127;
 		
-		if(Math.abs(rightX)<0.1) {
+		if(Math.abs(rightX)<0.2) {
 			rightX = 0;
 		}
 		
-		if(Math.abs(y)<0.1) {
+		if(Math.abs(y)<0.2) {
 			y=0;
 		}
 		
@@ -56,11 +56,18 @@ board.on("ready", function() {
 		//console.log("Y: " + y);
 		
 		//thrusterControl.thruster(self,t1Addr,0)
+		
+		lastThrustInput = rightX;
+		
 		thrusterControl.thruster(self,t1Addr,rightX);
+		
+		
 	});
 	
+	setInterval(function() {
+		thrusterControl.runLastInputAfterTime(self,t1Addr,rightX,250);
+	},20);
 	
-	thrusterControl.runLastInputAfterTime(self,t1Addr,rightX,250);
 });
 
 /*

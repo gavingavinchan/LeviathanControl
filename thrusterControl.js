@@ -51,8 +51,11 @@ exports.thruster = function (board,addr,thrust) { // thrust range: -1~1
 
 
 exports.runLastInputAfterTime = function(board,addr,Input,t) {
+	console.log("Running runLastInputAfterTime");
 	if(new Date().getTime() > lastThrusterInputTime + t) {
-		thruster(board,addr,Input);
+		exports.thruster(board,addr,Input);
+		console.log("Input: " + Input);
+		console.log("runLastInputAfterTime new date: " + new Date().getTime());
 	}
 }
 
