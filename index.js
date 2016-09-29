@@ -20,12 +20,16 @@ board.on("ready", function() {
 	this.i2cConfig();
 	
 	var t1Addr = 0x31;
+	var t2Addr = 0x29;
 	// Send power 0 to init the thruster
 	
 	var self = board;
 	
 	thrusterControl.thruster(self,t1Addr,0);
+	thrusterControl.thruster(self,t2Addr,0);
 	
+	
+	thrusterControl.thruster(self,t1Addr,0.5);
 	
 	setInterval(function() {
 		//thrusterControl.thruster(self, t1Addr, 1);
@@ -57,7 +61,7 @@ board.on("ready", function() {
 		
 		//thrusterControl.thruster(self,t1Addr,0)
 		
-		lastThrustInput = rightX;
+		
 		
 		thrusterControl.thruster(self,t1Addr,rightX);
 		
@@ -65,10 +69,49 @@ board.on("ready", function() {
 	});
 	
 	setInterval(function() {
-		thrusterControl.runLastInputAfterTime(self,t1Addr,rightX,250);
+		thrusterControl.runLastInputAfterTime(self,t1Addr,rightX,50);
+	},20);
+	
+	
+	
+	var leftX;
+	
+	controller.on("left:move", function(value){
+		console.log("controller.on: Running");
+		
+		leftX = (value.x - 127)/ 127;
+		var y = -(value.y -127) / 127;
+		
+		if(Math.abs(leftX)<0.2) {
+			leftX = 0;
+		}
+		
+		if(Math.abs(y)<0.2) {
+			y=0;
+		}
+		
+		//var t6Power = (y*0.5)+(x*0.5);
+		//var t3Power = (-y*0.5)+(x*0.5);
+		
+		console.log("LeftX: " + leftX);
+		console.log("Y: " + y);
+		
+		//thrusterControl.thruster(self,t2Addr,0)
+		
+		
+		
+		thrusterControl.thruster(self,t2Addr,leftX);
+		
+		
+	});
+	
+	setInterval(function() {
+		thrusterControl.runLastInputAfterTime(self,t2Addr,leftX,20);
 	},20);
 	
 });
+
+
 
 /*
 function readStatus(brd, addr) {

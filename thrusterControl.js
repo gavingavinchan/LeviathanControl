@@ -19,6 +19,7 @@ exports.thruster = function (board,addr,thrust) { // thrust range: -1~1
 	//lastThrusterTimer = new Date().getTime();
 	signalDelay = lastThrusterTimer + thruterSignalInterval;
 	
+	/*
 	console.log("<before>");
 	console.log("Date: " + new Date().getTime());
 	console.log("lastThrusterTimer: " + lastThrusterTimer);
@@ -26,9 +27,10 @@ exports.thruster = function (board,addr,thrust) { // thrust range: -1~1
 	console.log("</before Loop>");
 	
 	console.log("thrust: " + thrust);
+	*/
 	
 	if(new Date().getTime() > signalDelay) {
-		console.log("in loop");
+		//console.log("in loop");
 		var mappedThrust = exports.arduinoMap(thrust,-1,1,-32767,32767);
 		
 		if (mappedThrust>15000) mappedThrust = 15000;
@@ -38,20 +40,20 @@ exports.thruster = function (board,addr,thrust) { // thrust range: -1~1
 		board.i2cWrite(addr, 0x00, [0,0]);
 		board.i2cWrite(addr, 0x00, b);
 		
-		console.log("Before lastThrusterTimer: " + lastThrusterTimer);
+		//console.log("Before lastThrusterTimer: " + lastThrusterTimer);
 		
-		console.log("Thrust: ", mappedThrust, b);
+		// console.log("Thrust: ", mappedThrust, b);
 		lastThrusterTimer = new Date().getTime();
 		
 		lastThrusterInputTime = new Date().getTime();
 		
-		console.log("After lastThrusterTimer: " + lastThrusterTimer);
+		//console.log("After lastThrusterTimer: " + lastThrusterTimer);
 	}
 };
 
 
 exports.runLastInputAfterTime = function(board,addr,Input,t) {
-	console.log("Running runLastInputAfterTime");
+	//console.log("Running runLastInputAfterTime");
 	if(new Date().getTime() > lastThrusterInputTime + t) {
 		exports.thruster(board,addr,Input);
 		console.log("Input: " + Input);
