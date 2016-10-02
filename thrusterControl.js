@@ -61,6 +61,19 @@ exports.runLastInputAfterTime = function(board,addr,Input,t) {
 	}
 }
 
+exports.multiThrustInput = function(board,addr,power) {
+	addr.updatePower = power;			//is this global? and is an object
+}
+
+
+exports.multiThrust = function(board,addr,power) {
+	if(addr.updatePower !== addr.currentPower) {
+		exports.thruster(board,addr,addr.updatePower);
+		addr.currentPower = addr.updatePower;
+	}
+}
+
+
 exports.numberToByte = function(x) {
 	var b = x%255;
 	var a = (x-b)/255;

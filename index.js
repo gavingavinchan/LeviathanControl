@@ -5,6 +5,9 @@ var board = new five.Board();
 
 var GamePad = require('node-gamepad');
 var controller = new GamePad('ps4/dualshock4'); // dont know if right
+
+var initMultiThrust = false;
+
 controller.connect();
 
 //var rpmTimer = (new Date().getTime());
@@ -19,21 +22,24 @@ board.on("ready", function() {
 	// Must called first b4 making any i2c connection
 	this.i2cConfig();
 	
-	var t1Addr = 0x31;
-	var t2Addr = 0x29;
+	//var t1Addr = 0x31;
+	//var t2Addr = 0x29;
+	
+	var addr = [0x31,0x29];
+	
 	// Send power 0 to init the thruster
 	
 	var self = board;
 	
-	thrusterControl.thruster(self,t1Addr,0);
-	thrusterControl.thruster(self,t2Addr,0);
+	thrusterControl.thruster(self,addr[0],0);
+	thrusterControl.thruster(self,addr[1],0);
 	
 	
-	thrusterControl.thruster(self,t1Addr,0.5);
+	thrusterControl.thruster(self,addr[0],0.5);
 	
 	setInterval(function() {
-		//thrusterControl.thruster(self, t1Addr, 1);
- 		//thrusterControl.readStatus(self, t1Addr);
+		//thrusterControl.thruster(self, addr[0], 1);
+ 		//thrusterControl.readStatus(self, addr[0]);
 	}, 2000	);
 	
 	
@@ -59,18 +65,20 @@ board.on("ready", function() {
 		//console.log("X: " + x);
 		//console.log("Y: " + y);
 		
-		//thrusterControl.thruster(self,t1Addr,0)
+		//thrusterControl.thruster(self,addr[0],0)
 		
 		
 		
-		thrusterControl.thruster(self,t1Addr,rightX);
+		thrusterControl.thruster(self,addr[0],rightX);
 		
 		
 	});
 	
+	/*
 	setInterval(function() {
-		thrusterControl.runLastInputAfterTime(self,t1Addr,rightX,50);
+		thrusterControl.runLastInputAfterTime(self,addr[0],rightX,50);
 	},20);
+	*/
 	
 	
 	
@@ -96,18 +104,26 @@ board.on("ready", function() {
 		console.log("LeftX: " + leftX);
 		console.log("Y: " + y);
 		
-		//thrusterControl.thruster(self,t2Addr,0)
+		//thrusterControl.thruster(self,addr[1],0)
 		
 		
 		
-		thrusterControl.thruster(self,t2Addr,leftX);
+		thrusterControl.thruster(self,addr[1],leftX);
 		
 		
 	});
 	
+	/*
 	setInterval(function() {
-		thrusterControl.runLastInputAfterTime(self,t2Addr,leftX,20);
+		thrusterControl.runLastInputAfterTime(self,addr[1],leftX,20);
 	},20);
+	*/
+	
+	if(initMultiThrust) {
+		setInterval(
+			thrusterControl.multiThrust(board,)
+		)
+	}
 	
 });
 
