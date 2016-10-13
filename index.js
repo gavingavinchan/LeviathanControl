@@ -69,7 +69,9 @@ board.on("ready", function() {
 		
 		
 		
-		thrusterControl.thruster(self,addr[0],rightX);
+		//thrusterControl.thruster(self,addr[0],rightX);
+		
+		thrusterControl.multiThrustInput(self,addr[0],rightX);
 		
 		
 	});
@@ -119,11 +121,9 @@ board.on("ready", function() {
 	},20);
 	*/
 	
-	if(initMultiThrust) {
-		setInterval(
-			thrusterControl.multiThrust(board,)
-		)
-	}
+	setInterval(function() {
+		thrusterControl.UpdateThrust(self,addr);
+	},20);
 	
 });
 

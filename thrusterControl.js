@@ -16,6 +16,8 @@ exports.arduinoMap = function(value,fromLow,fromHigh,toLow,toHigh) {
 exports.thruster = function (board,addr,thrust) { // thrust range: -1~1
 	var signalDelay = 0;
 	
+	console.log("thrust: " + thrust);
+	
 	//lastThrusterTimer = new Date().getTime();
 	signalDelay = lastThrusterTimer + thruterSignalInterval;
 	
@@ -61,15 +63,25 @@ exports.runLastInputAfterTime = function(board,addr,Input,t) {
 	}
 }
 
+
+var updatePower = {};
+var currentPower = {};
+var thrusterTimer = {};
+thrusterTimer.delay = 50;
 exports.multiThrustInput = function(board,addr,power) {
-	addr.updatePower = power;			//is this global? and is an object
+	updatePower[addr] = power;			//square brackets because addr is a number
+	console.log("updatePower =" +  updatePower[addr]);
 }
 
 
-exports.multiThrust = function(board,addr,power) {
-	if(addr.updatePower !== addr.currentPower) {
-		exports.thruster(board,addr,addr.updatePower);
-		addr.currentPower = addr.updatePower;
+exports.UpdateThrust = function(board,addrArray) {
+	console.log("UpdateThrust: Running");
+	for(var whichAddr = 0; whichAddr<addrArray.length; whichAddr++) {
+		var currentAddr = addrArray[whichAddr];
+		if((updatePower[currentAddr] !== currentPower[currentAddr]) || new Date().getTime() > thrusterTimer.currentAddr + thrusterTimer.delay) {
+			exports.thruster(board,currentAddr,updatePower[currentAddr]);
+			currentPower[currentAddr] = updatePower[currentAddr];
+		}
 	}
 }
 
