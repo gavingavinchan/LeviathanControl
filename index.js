@@ -1,7 +1,8 @@
 var thrusterControl = require('./thrusterControl.js');  // dont know shouild be " or '
 
 var five = require("johnny-five");
-var board = new five.Board();
+var board = require("./dummyBoard").createDummyBoard();
+// var board = new five.Board();
 
 var GamePad = require('node-gamepad');
 var controller = new GamePad('ps4/dualshock4'); // dont know if right
