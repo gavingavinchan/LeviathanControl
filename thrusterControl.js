@@ -68,6 +68,7 @@ var updatePower = {};
 var currentPower = {};
 var thrusterTimer = {};
 thrusterTimer.delay = 50;
+
 exports.multiThrustInput = function(board,addr,power) {
 	updatePower[addr] = power;			//square brackets because addr is a number
 	console.log("updatePower =" +  updatePower[addr]);

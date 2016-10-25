@@ -26,6 +26,7 @@ board.on("ready", function() {
 	//var t2Addr = 0x29;
 	
 	var addr = [0x31,0x29];
+	//0 = H1, 1 = H2, 2 = V1, 3 = V2
 	
 	// Send power 0 to init the thruster
 	
@@ -85,18 +86,19 @@ board.on("ready", function() {
 	
 	
 	var leftX;
+	var leftY;
 	
 	controller.on("left:move", function(value){
 		console.log("controller.on: Running");
 		
 		leftX = (value.x - 127)/ 127;
-		var y = -(value.y -127) / 127;
+		leftY = -(value.y -127) / 127;
 		
 		if(Math.abs(leftX)<0.2) {
 			leftX = 0;
 		}
 		
-		if(Math.abs(y)<0.2) {
+		if(Math.abs(leftY)<0.2) {
 			y=0;
 		}
 		
@@ -104,13 +106,28 @@ board.on("ready", function() {
 		//var t3Power = (-y*0.5)+(x*0.5);
 		
 		console.log("LeftX: " + leftX);
-		console.log("Y: " + y);
+		console.log("Y: " + leftY);
 		
 		//thrusterControl.thruster(self,addr[1],0)
 		
 		
+		var H1Thrust = leftX + leftY;
+		var H2Thrust = -leftX + leftY;
 		
-		thrusterControl.thruster(self,addr[1],leftX);
+		if(H1Thrust > 1) {
+			H1Thrust = 1;
+		}
+		
+		if(H2Thrust > 1) {
+			H2Thrust = 1;
+		}
+		
+		
+		//thrusterControl.thruster(self,addr[1],leftX);
+		
+		
+		thrusterControl.multiThrustInput(self,addr[0],H1Thrust);
+		thrusterControl.multiThrustInput(self,addr[1],H2Thrust);
 		
 		
 	});
