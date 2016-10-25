@@ -32,12 +32,6 @@ board.on("ready", function() {
 	
 	var self = board;
 	
-	thrusterControl.thruster(self,addr[0],0);
-	thrusterControl.thruster(self,addr[1],0);
-	
-	
-	thrusterControl.thruster(self,addr[0],0.5);
-	
 	setInterval(function() {
 		//thrusterControl.thruster(self, addr[0], 1);
  		//thrusterControl.readStatus(self, addr[0]);
@@ -45,6 +39,8 @@ board.on("ready", function() {
 	
 	
 	var rightX;
+	
+	thrusterControl.startUpdate(self);
 	
 	controller.on("right:move", function(value){
 		console.log("controller.on: Running");
@@ -73,8 +69,6 @@ board.on("ready", function() {
 		//thrusterControl.thruster(self,addr[0],rightX);
 		
 		thrusterControl.multiThrustInput(self,addr[0],rightX);
-		
-		
 	});
 	
 	/*
@@ -137,11 +131,6 @@ board.on("ready", function() {
 		thrusterControl.runLastInputAfterTime(self,addr[1],leftX,20);
 	},20);
 	*/
-	
-	setInterval(function() {
-		thrusterControl.UpdateThrust(self,addr);
-	},20);
-	
 });
 
 

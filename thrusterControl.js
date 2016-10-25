@@ -13,73 +13,31 @@ exports.arduinoMap = function(value,fromLow,fromHigh,toLow,toHigh) {
 	return Math.floor(value);
 };
 
-exports.thruster = function (board,addr,thrust) { // thrust range: -1~1
-	var signalDelay = 0;
-	
-	console.log("thrust: " + thrust);
-	
-	//lastThrusterTimer = new Date().getTime();
-	signalDelay = lastThrusterTimer + thruterSignalInterval;
-	
-	/*
-	console.log("<before>");
-	console.log("Date: " + new Date().getTime());
-	console.log("lastThrusterTimer: " + lastThrusterTimer);
-	console.log("lastThrusterTimer + thruterSignalInterval: " + signalDelay);
-	console.log("</before Loop>");
-	
-	console.log("thrust: " + thrust);
-	*/
-	
-	if(new Date().getTime() > signalDelay) {
-		//console.log("in loop");
-		var mappedThrust = exports.arduinoMap(thrust,-1,1,-32767,32767);
-		
-		if (mappedThrust>15000) mappedThrust = 15000;
-		else if (mappedThrust<-15000) mappedThrust = -15000;
-		
-		var b = exports.numberToByte(mappedThrust);
-		board.i2cWrite(addr, 0x00, [0,0]);
-		board.i2cWrite(addr, 0x00, b);
-		
-		//console.log("Before lastThrusterTimer: " + lastThrusterTimer);
-		
-		// console.log("Thrust: ", mappedThrust, b);
-		lastThrusterTimer = new Date().getTime();
-		
-		lastThrusterInputTime = new Date().getTime();
-		
-		//console.log("After lastThrusterTimer: " + lastThrusterTimer);
-	}
-};
-
-
-exports.runLastInputAfterTime = function(board,addr,Input,t) {
-	//console.log("Running runLastInputAfterTime");
-	if(new Date().getTime() > lastThrusterInputTime + t) {
-		exports.thruster(board,addr,Input);
-		console.log("Input: " + Input);
-		console.log("runLastInputAfterTime new date: " + new Date().getTime());
-	}
-}
-
-
 var updatePower = {};
 var currentPower = {};
 var thrusterTimer = {};
 thrusterTimer.delay = 50;
+
+
+//TODO: set interval here to update the thruster
+exports.startUpdate = function(board){
+	var b = board;
+	
+}
+
+exports.stopUpdate = function(){
+	
+}
 
 exports.multiThrustInput = function(board,addr,power) {
 	updatePower[addr] = power;			//square brackets because addr is a number
 	console.log("updatePower =" +  updatePower[addr]);
 }
 
-
-exports.UpdateThrust = function(board,addrArray) {
-	console.log("UpdateThrust: Running");
+exports.updateThrust = function(board,addrArray) {
 	for(var whichAddr = 0; whichAddr<addrArray.length; whichAddr++) {
 		var currentAddr = addrArray[whichAddr];
-		if((updatePower[currentAddr] !== currentPower[currentAddr]) || new Date().getTime() > thrusterTimer.currentAddr + thrusterTimer.delay) {
+		if((updatePower[currentAddr] != currentPower[currentAddr])) {
 			exports.thruster(board,currentAddr,updatePower[currentAddr]);
 			currentPower[currentAddr] = updatePower[currentAddr];
 		}
