@@ -25,7 +25,7 @@ board.on("ready", function() {
 	//var t1Addr = 0x31;
 	//var t2Addr = 0x29;
 	
-	var addr = [0x31,0x29];
+	var addr = [0x31,0x29,0x30,0x2F];
 	//0 = H1, 1 = H2, 2 = V1, 3 = V2
 	
 	// Send power 0 to init the thruster
@@ -40,97 +40,17 @@ board.on("ready", function() {
 	
 	var rightX;
 	
-	thrusterControl.startUpdate(self);
+	thrusterControl.startUpdate(self,addr);
 	
 	controller.on("right:move", function(value){
-		console.log("controller.on: Running");
-		
-		rightX = (value.x - 127)/ 127;
-		var y = -(value.y -127) / 127;
-		
-		if(Math.abs(rightX)<0.2) {
-			rightX = 0;
-		}
-		
-		if(Math.abs(y)<0.2) {
-			y=0;
-		}
-		
-		//var t6Power = (y*0.5)+(x*0.5);
-		//var t3Power = (-y*0.5)+(x*0.5);
-		
-		//console.log("X: " + x);
-		//console.log("Y: " + y);
-		
-		//thrusterControl.thruster(self,addr[0],0)
-		
-		
-		
-		//thrusterControl.thruster(self,addr[0],rightX);
-		
-		thrusterControl.multiThrustInput(self,addr[0],rightX);
+		thrusterControl.mapRightJoystick(self,addr,value.x,value.y);
 	});
 	
-	/*
-	setInterval(function() {
-		thrusterControl.runLastInputAfterTime(self,addr[0],rightX,50);
-	},20);
-	*/
-	
-	
-	
-	var leftX;
-	var leftY;
-	
+
 	controller.on("left:move", function(value){
-		console.log("controller.on: Running");
-		
-		leftX = (value.x - 127)/ 127;
-		leftY = -(value.y -127) / 127;
-		
-		if(Math.abs(leftX)<0.2) {
-			leftX = 0;
-		}
-		
-		if(Math.abs(leftY)<0.2) {
-			y=0;
-		}
-		
-		//var t6Power = (y*0.5)+(x*0.5);
-		//var t3Power = (-y*0.5)+(x*0.5);
-		
-		console.log("LeftX: " + leftX);
-		console.log("Y: " + leftY);
-		
-		//thrusterControl.thruster(self,addr[1],0)
-		
-		
-		var H1Thrust = leftX + leftY;
-		var H2Thrust = -leftX + leftY;
-		
-		if(H1Thrust > 1) {
-			H1Thrust = 1;
-		}
-		
-		if(H2Thrust > 1) {
-			H2Thrust = 1;
-		}
-		
-		
-		//thrusterControl.thruster(self,addr[1],leftX);
-		
-		
-		thrusterControl.multiThrustInput(self,addr[0],H1Thrust);
-		thrusterControl.multiThrustInput(self,addr[1],H2Thrust);
-		
-		
+		thrusterControl.mapLeftJoystick(self,addr,value.x,value.y);
 	});
 	
-	/*
-	setInterval(function() {
-		thrusterControl.runLastInputAfterTime(self,addr[1],leftX,20);
-	},20);
-	*/
 });
 
 

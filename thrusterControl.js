@@ -13,6 +13,21 @@ exports.arduinoMap = function(value,fromLow,fromHigh,toLow,toHigh) {
 	return Math.floor(value);
 };
 
+exports.thruster = function (board,addr,thrust) { // thrust range: -1~1
+	var signalDelay = 0;
+	signalDelay = lastThrusterTimer + thruterSignalInterval;
+	
+	var mappedThrust = exports.arduinoMap(thrust,-1,1,-32767,32767);
+	
+	if (mappedThrust>15000) mappedThrust = 15000;
+	else if (mappedThrust<-15000) mappedThrust = -15000;
+	
+	var b = exports.numberToByte(mappedThrust);
+	board.i2cWrite(addr, 0x00, [0,0]);
+	board.i2cWrite(addr, 0x00, b);
+};
+
+
 var updatePower = {};
 var currentPower = {};
 var thrusterTimer = {};
@@ -20,9 +35,10 @@ thrusterTimer.delay = 50;
 
 
 //TODO: set interval here to update the thruster
-exports.startUpdate = function(board){
-	var b = board;
-	
+exports.startUpdate = function(board,addr) {
+	setInterval(function() {
+		exports.updateThrust(board,addr);
+	},20);
 }
 
 exports.stopUpdate = function(){
@@ -31,17 +47,19 @@ exports.stopUpdate = function(){
 
 exports.multiThrustInput = function(board,addr,power) {
 	updatePower[addr] = power;			//square brackets because addr is a number
-	console.log("updatePower =" +  updatePower[addr]);
 }
 
 exports.updateThrust = function(board,addrArray) {
+	var log = "";
 	for(var whichAddr = 0; whichAddr<addrArray.length; whichAddr++) {
 		var currentAddr = addrArray[whichAddr];
+		log += Math.round(currentPower[currentAddr]*1000) + "\t";
 		if((updatePower[currentAddr] != currentPower[currentAddr])) {
 			exports.thruster(board,currentAddr,updatePower[currentAddr]);
 			currentPower[currentAddr] = updatePower[currentAddr];
 		}
 	}
+	console.log(log);
 }
 
 
@@ -50,6 +68,73 @@ exports.numberToByte = function(x) {
 	var a = (x-b)/255;
 	return [a,b];
 };
+
+exports.mapLeftJoystick = function(board,addr,x,y) {
+	var leftX = (x - 127) / 127;
+	var leftY = -(y - 127) / 127;
+	
+	if(Math.abs(leftX)<0.2) {
+		leftX = 0;
+	}
+	
+	if(Math.abs(leftY)<0.2) {
+		y=0;
+	}
+	
+	var H1Thrust = leftX + leftY;
+	var H2Thrust = -leftX + leftY;
+	
+	if(Math.abs(H1Thrust) > 1) {
+		H1Thrust = 1;
+	} else if (H1Thrust < -1){
+		H1Thrust = -1;
+	}
+	
+	if(Math.abs(H2Thrust) > 1) {
+		H2Thrust = 1;
+	} else if (H2Thrust < -1){
+		H2Thrust = -1;
+	}
+	
+	exports.multiThrustInput(board,addr[0],H1Thrust);
+	exports.multiThrustInput(board,addr[1],H2Thrust);
+	
+}
+
+exports.mapRightJoystick = function(board,addr,x,y) {
+	var rightX = (x - 127) / 127;
+	var rightY = (y - 127) / 127;
+	
+	if(Math.abs(rightX)<0.2) {
+		rightX = 0;
+	}
+	
+	if(Math.abs(rightY)<0.2) {
+		rightY = 0;
+	}
+	
+	var V1Thrust = rightX + rightY;
+	var V2Thrust = -rightX + rightY;
+	
+	if(V1Thrust > 1) {
+		V1Thrust = 1;
+	} else if (V1Thrust < -1){
+		V1Thrust = -1;
+	}
+	
+	if(Math.abs(V2Thrust) > 1) {
+		V2Thrust = 1;
+	} else if (V2Thrust < -1){
+		V2Thrust = -1;
+	}
+	
+	//console.log("multiThrustInput");
+	exports.multiThrustInput(board,addr[2],V1Thrust);
+	exports.multiThrustInput(board,addr[3],V2Thrust);
+	
+}
+
+
 
 exports.readStatus = function (brd, addr) {
 	brd.i2cReadOnce(addr, 0x02, 9, function(bytes){
