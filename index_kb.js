@@ -1,5 +1,7 @@
 var thrusterControl = require('./thrusterControl.js');  // dont know shouild be " or '
 
+var five = require("johnny-five");
+var board = new five.Board();
 
 var GamePad = require('node-gamepad');
 var controller = new GamePad('ps4/dualshock4'); // dont know if right
@@ -7,9 +9,6 @@ var controller = new GamePad('ps4/dualshock4'); // dont know if right
 var initMultiThrust = false;
 
 controller.connect();
-
-var five = require("johnny-five");
-var board = new five.Board();
 
 //var rpmTimer = (new Date().getTime());
 
@@ -52,9 +51,6 @@ board.on("ready", function() {
 		thrusterControl.mapLeftJoystick(self,addr,value.x,value.y);
 	});
 	
-	board.analogRead(0, function(value){
-		console.log("voltage: ", Math.round(value/1024*5*0.91 * 100));
-	})
 });
 
 

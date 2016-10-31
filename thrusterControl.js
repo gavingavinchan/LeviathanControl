@@ -59,7 +59,7 @@ exports.updateThrust = function(board,addrArray) {
 			currentPower[currentAddr] = updatePower[currentAddr];
 		}
 	}
-	console.log(log);
+	//console.log(log);
 }
 
 
@@ -73,7 +73,7 @@ exports.mapLeftJoystick = function(board,addr,x,y) {
 	var leftX = (x - 127) / 127;
 	var leftY = -(y - 127) / 127;
 	
-	if(Math.abs(leftX)<0.2) {
+	if(Math.abs(leftX)<0.3) {
 		leftX = 0;
 	}
 	
@@ -83,17 +83,18 @@ exports.mapLeftJoystick = function(board,addr,x,y) {
 	
 	var H1Thrust = leftX + leftY;
 	var H2Thrust = -leftX + leftY;
+	var limit = 0.95;
 	
-	if(Math.abs(H1Thrust) > 1) {
-		H1Thrust = 1;
-	} else if (H1Thrust < -1){
-		H1Thrust = -1;
+	if(H1Thrust > limit) {
+		H1Thrust = limit;
+	} else if (H1Thrust < -limit){
+		H1Thrust = -limit;
 	}
 	
-	if(Math.abs(H2Thrust) > 1) {
-		H2Thrust = 1;
-	} else if (H2Thrust < -1){
-		H2Thrust = -1;
+	if(H2Thrust > limit) {
+		H2Thrust = limit;
+	} else if (H2Thrust < -limit){
+		H2Thrust = -limit;
 	}
 	
 	exports.multiThrustInput(board,addr[0],H1Thrust);
@@ -103,7 +104,7 @@ exports.mapLeftJoystick = function(board,addr,x,y) {
 
 exports.mapRightJoystick = function(board,addr,x,y) {
 	var rightX = (x - 127) / 127;
-	var rightY = (y - 127) / 127;
+	var rightY = -(y - 127) / 127;
 	
 	if(Math.abs(rightX)<0.2) {
 		rightX = 0;
@@ -113,19 +114,19 @@ exports.mapRightJoystick = function(board,addr,x,y) {
 		rightY = 0;
 	}
 	
-	var V1Thrust = rightX + rightY;
-	var V2Thrust = -rightX + rightY;
-	
-	if(V1Thrust > 1) {
-		V1Thrust = 1;
-	} else if (V1Thrust < -1){
-		V1Thrust = -1;
+	var V1Thrust = rightX - rightY;
+	var V2Thrust = rightX + rightY;
+	var limit = 0.95;
+	if(V1Thrust > limit) {
+		V1Thrust = limit;
+	} else if (V1Thrust < -limit){
+		V1Thrust = -limit;
 	}
 	
-	if(Math.abs(V2Thrust) > 1) {
-		V2Thrust = 1;
-	} else if (V2Thrust < -1){
-		V2Thrust = -1;
+	if(V2Thrust > limit) {
+		V2Thrust = limit;
+	} else if (V2Thrust < -limit){
+		V2Thrust = -limit;
 	}
 	
 	//console.log("multiThrustInput");
