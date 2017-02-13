@@ -16,7 +16,7 @@ void loop() {
     if(byteCommand == 0xCE) {
       byte newAddress = TinyWireS.receive();
       //Write value
-      EEPROM.put(0, 0x06);
+      EEPROM.put(0, newAddress);
       Blink(1000);    
       delay(1000);
     } else if(byteCommand == 0x10) {
