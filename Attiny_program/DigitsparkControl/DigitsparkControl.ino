@@ -1,10 +1,10 @@
 /**
  * function: 
- *            1. I2c slave to sent PWM to motor control
+ *            1. I2c slave to sent PWM to motor control or turn on/off light with PWM
  *            2. Use EEPROM to rewrite its I2c address
  *            3. simple blink on command to check if it's alive
  * 
- * How to send byte value to turn motor
+ * How to send byte value to turn motor or turn on/off light
  *    1. send 0x00
  *    2. send value, range: ccw 0~255 cw,   127 for stop; approach 0 = ccw; approach 255 = cw
  *    
