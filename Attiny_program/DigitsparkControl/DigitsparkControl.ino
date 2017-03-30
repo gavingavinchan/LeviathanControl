@@ -29,12 +29,17 @@
 void setup() {
   // put your setup code here, to run once:
   byte I2C_SLAVE_ADDR = 0;
-  EEPROM.get(0,I2C_SLAVE_ADDR);         //get its own slave address from EEPROM
+  I2C_SLAVE_ADDR = EEPROM.read(0);         //get its own slave address from EEPROM
+  if(I2C_SLAVE_ADDR > 127 || I2C_SLAVE_ADDR < 1) {
+    I2C_SLAVE_ADDR = 127;
+  }
   TinyWireS.begin(I2C_SLAVE_ADDR);      // init I2C Slave mode
   Blink(2); 
   pinMode(ledPin, OUTPUT);
   pinMode(cwCcwPin, OUTPUT);
   pinMode(motorPin, OUTPUT);
+
+  digitalWrite(motorPin,HIGH);         //initiate motor with default stop
 }
 
 void loop() {
@@ -43,14 +48,21 @@ void loop() {
     //Blink(3);
     byte byteCommand = TinyWireS.receive();     //get command to turn motor
     if(byteCommand == 0x00) {
-      byte power = TinyWireS.receive();         //get value 
+      byte rotation = TinyWireS.receive();         //get value 
       Blink(1);
-      if(power>127) {                           //see if turn clock wise or counter clockwise
+      if(rotation) {                            //see if turn clock wise or counter clockwise
         digitalWrite(cwCcwPin, HIGH);           //send motor value to turn cw or ccw
       } else {
         digitalWrite(cwCcwPin, LOW);
       }
-      analogWrite(motorPin,mapPower(power));    //send PWM value
+      
+      byte power = TinyWireS.receive();
+      //analogWrite(motorPin,mapPower(power));    //send PWM value
+      if(power>250) {
+        power = 250;
+      }
+      analogWrite(motorPin,power);
+      
     } else if(byteCommand == 0xCE) {            //command to change address
       byte newAddress = TinyWireS.receive();    //new address value
       //Write value
