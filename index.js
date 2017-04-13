@@ -1,4 +1,4 @@
-var addr = [0x35,0x2D,0x29,0x31];
+var addr = [0x31,0x2C,0x35,0x2D];
 //0 = HL, 1 = HR, 2 = VF, 3 = VR
 
 var testPower = 0.1;
@@ -52,7 +52,7 @@ board.on("ready", function() {
   */
 
   controller.on("left:move", function(value) {
-    var HLThrust = normalizeJoystick(value.x) + normalizeJoystick(value.y);
+    var HLThrust = -normalizeJoystick(value.x) - normalizeJoystick(value.y);
     var HRThrust = -normalizeJoystick(value.x) + normalizeJoystick(value.y);
     console.log("joystick HLThurst: " + limitThrust(HLThrust) + "joystick HRThurst: " + limitThrust(HRThrust));
     //console.log("joystick leftY: " + value.y);
@@ -66,8 +66,8 @@ board.on("ready", function() {
     var VRThrust = -normalizeJoystick(value.x) + normalizeJoystick(value.y);
 
 		//console.log("joystick VFThurst: " + limitThrust(VFThrust) + "joystick VRThurst: " + limitThrust(VRThrust));
-    thrusterControl.power(2,limitThrust(VFThrust));
-    thrusterControl.power(3,limitThrust(VRThrust));
+    thrusterControl.power(2,limitThrust(-VFThrust));
+    thrusterControl.power(3,limitThrust(-VRThrust));
   });
 });
 
