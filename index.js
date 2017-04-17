@@ -1,13 +1,18 @@
-var addr = [0x31,0x2C,0x35,0x2D];
+var addr = [0x37,0x2C,0x35,0x2D];
 //0 = HL, 1 = HR, 2 = VF, 3 = VR
+
+var motorAddress = [0x7B];
+
 
 var testPower = 0.1;
 
-var lowerThrustLimit = 0.1;
+var lowerThrustLimit = 0.15;
 var upperThrustLimit = 0.95;
 
 
 var thrusterControl = require('./thrusterControl.js');
+
+var motorControl = require('./motorControl.js');
 
 var five = require("johnny-five");
 var board = new five.Board();
@@ -30,7 +35,7 @@ board.on("ready", function() {
   var self = board;
 
   //initiate thrusterControl
-  thrusterControl.init(self,addr,50);
+  thrusterControl.init(self,addr,60);
 
   /*
 	for(var index=0;index<addr.length;index++) {
@@ -52,9 +57,9 @@ board.on("ready", function() {
   */
 
   controller.on("left:move", function(value) {
-    var HLThrust = -normalizeJoystick(value.x) - normalizeJoystick(value.y);
-    var HRThrust = -normalizeJoystick(value.x) + normalizeJoystick(value.y);
-    console.log("joystick HLThurst: " + limitThrust(HLThrust) + "joystick HRThurst: " + limitThrust(HRThrust));
+    var HLThrust = normalizeJoystick(value.x) - normalizeJoystick(value.y);
+    var HRThrust = -normalizeJoystick(value.x) - normalizeJoystick(value.y);
+    //console.log("joystick HLThurst: " + limitThrust(HLThrust) + "joystick HRThurst: " + limitThrust(HRThrust));
     //console.log("joystick leftY: " + value.y);
 
     thrusterControl.power(0,limitThrust(HLThrust));
@@ -69,6 +74,25 @@ board.on("ready", function() {
     thrusterControl.power(2,limitThrust(-VFThrust));
     thrusterControl.power(3,limitThrust(-VRThrust));
   });
+
+
+
+	controller.on("l1:press", function(){
+		motorControl.control(self,motorAddress[0],0.004);
+		console.log("l1 pressed");
+	});
+
+	controller.on("l1:release", function() {
+		motorControl.control(self,motorAddress[0],1);
+	});
+
+	controller.on("r1:press", function() {
+		motorControl.control(self,motorAddress[0],-0.004);
+	});
+
+	controller.on("r1:release", function() {
+		motorControl.control(self,motorAddress[0],-1);
+	})
 });
 
 

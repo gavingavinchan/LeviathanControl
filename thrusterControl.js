@@ -11,12 +11,19 @@ exports.init = function(_board,_addrArr,_updateInterval) {
     updateValue.push(0);
   }
 
+// Initialize all thrusters
+  for(var index=0;index<addrArray.length;index++) {
+    //console.log("updatePower");
+    updatePower(index);
+  }
+
   setInterval(function() {
     //console.log("arrray.length" + addrArray.length);
     for(var index=0;index<addrArray.length;index++) {
       //console.log("updatePower");
       updatePower(index);
     }
+    //console.log(updateValue[0]);
   },_updateInterval);
 }
 
@@ -30,9 +37,9 @@ updatePower = function(index) {
     var mappedPower = arduinoMap(updateValue[index],-1,1,-32767,32767);
     var bitePower = numberToByte(mappedPower);
     if(index == 0 || index == 1) {
-      console.log("addrArray[" + index + "]: " + mappedPower);
+      //console.log("addrArray[" + index + "]: " + mappedPower);
     }
-    board.i2cWrite(addrArray[index], 0x00, [0,0]);
+    // board.i2cWrite(addrArray[index], 0x00, [0,0]);
   	board.i2cWrite(addrArray[index], 0x00, bitePower);
 }
 
