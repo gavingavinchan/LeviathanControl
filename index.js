@@ -2,6 +2,7 @@ var addr = [0x37,0x2C,0x35,0x2D];
 //0 = HL, 1 = HR, 2 = VF, 3 = VR
 
 var motorAddress = [0x7B];
+//0 = Agar extractor motor, 1 = valve turner, 2 = reman lights
 
 
 var testPower = 0.1;
@@ -76,7 +77,7 @@ board.on("ready", function() {
   });
 
 
-
+	//l1 and r1
 	controller.on("l1:press", function(){
 		motorControl.control(self,motorAddress[0],0.004);
 		console.log("l1 pressed");
@@ -92,6 +93,33 @@ board.on("ready", function() {
 
 	controller.on("r1:release", function() {
 		motorControl.control(self,motorAddress[0],-1);
+	})
+	
+	//l2 and r2
+	controller.on("l1:press", function(){
+		motorControl.control(self,motorAddress[1],0.004);
+		console.log("l1 pressed");
+	});
+
+	controller.on("l1:release", function() {
+		motorControl.control(self,motorAddress[1],1);
+	});
+
+	controller.on("r1:press", function() {
+		motorControl.control(self,motorAddress[1],-0.004);
+	});
+
+	controller.on("r1:release", function() {
+		motorControl.control(self,motorAddress[1],-1);
+	})
+	
+	//remen lights
+	controller.on("x:press", function(){
+		motorControl.control(self,motorAddress[2],1);
+	});
+	
+	controller.on("x:release", function() {
+		motorControl.control(self,motorAddress[2],0);
 	})
 });
 
