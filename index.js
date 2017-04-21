@@ -1,7 +1,9 @@
-var addr = [0x37,0x2C,0x35,0x2D];
+var addr = [0x2C,0x2F,0x35,0x2D];
 //0 = HL, 1 = HR, 2 = VF, 3 = VR
+var direction = [-1,-1,1,1];
 
-var motorAddress = [0x7B];
+
+var motorAddress = [0x06,0x0A,0x0D];
 //0 = Agar extractor motor, 1 = valve turner, 2 = reman lights
 
 
@@ -63,8 +65,8 @@ board.on("ready", function() {
     //console.log("joystick HLThurst: " + limitThrust(HLThrust) + "joystick HRThurst: " + limitThrust(HRThrust));
     //console.log("joystick leftY: " + value.y);
 
-    thrusterControl.power(0,limitThrust(HLThrust));
-    thrusterControl.power(1,limitThrust(HRThrust));
+    thrusterControl.power(0,limitThrust(HLThrust)*direction[0]);
+    thrusterControl.power(1,limitThrust(HRThrust)*direction[1]);
   });
 
   controller.on("right:move", function(value) {
@@ -72,8 +74,8 @@ board.on("ready", function() {
     var VRThrust = -normalizeJoystick(value.x) + normalizeJoystick(value.y);
 
 		//console.log("joystick VFThurst: " + limitThrust(VFThrust) + "joystick VRThurst: " + limitThrust(VRThrust));
-    thrusterControl.power(2,limitThrust(-VFThrust));
-    thrusterControl.power(3,limitThrust(-VRThrust));
+    thrusterControl.power(2,limitThrust(-VFThrust)*direction[2]);
+    thrusterControl.power(3,limitThrust(-VRThrust)*direction[3]);
   });
 
 
@@ -94,30 +96,30 @@ board.on("ready", function() {
 	controller.on("r1:release", function() {
 		motorControl.control(self,motorAddress[0],-1);
 	})
-	
+
 	//l2 and r2
-	controller.on("l1:press", function(){
+	controller.on("square:press", function(){
 		motorControl.control(self,motorAddress[1],0.004);
-		console.log("l1 pressed");
+		console.log("square pressed");
 	});
 
-	controller.on("l1:release", function() {
+	controller.on("square:release", function() {
 		motorControl.control(self,motorAddress[1],1);
 	});
 
-	controller.on("r1:press", function() {
+	controller.on("circle:press", function() {
 		motorControl.control(self,motorAddress[1],-0.004);
 	});
 
-	controller.on("r1:release", function() {
+	controller.on("circle:release", function() {
 		motorControl.control(self,motorAddress[1],-1);
 	})
-	
+
 	//remen lights
 	controller.on("x:press", function(){
 		motorControl.control(self,motorAddress[2],1);
 	});
-	
+
 	controller.on("x:release", function() {
 		motorControl.control(self,motorAddress[2],0);
 	})
