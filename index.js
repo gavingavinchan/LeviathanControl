@@ -1,11 +1,12 @@
-var addr = [0x2C,0x2F,0x35,0x2D];
+var addr = [0x31,0x2F,0x36,0x2D];
 //0 = HL, 1 = HR, 2 = VF, 3 = VR
 var direction = [-1,-1,1,1];
 
 
-var motorAddress = [0x06,0x0A,0x0D];
-//0 = Agar extractor motor, 1 = valve turner, 2 = reman lights
+var motorAddress = [0x0A,0x0B];
+//0 = Agar extractor motor, 1 = valve turner
 
+var remenAddr = 0x17;
 
 var testPower = 0.1;
 
@@ -117,11 +118,15 @@ board.on("ready", function() {
 
 	//remen lights
 	controller.on("x:press", function(){
-		motorControl.control(self,motorAddress[2],1);
+		//motorControl.control(self,motorAddress[2],1);
+		self.i2cWrite(remenAddr,0x05);
+		self.i2cWrite(remenAddr,255);
 	});
 
 	controller.on("x:release", function() {
-		motorControl.control(self,motorAddress[2],0);
+		//motorControl.control(self,motorAddress[2],0);
+		self.i2cWrite(remenAddr,0x05);
+		self.i2cWrite(remenAddr,0);
 	})
 });
 
