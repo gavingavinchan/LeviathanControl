@@ -21,10 +21,12 @@
 #include "TinyWireS.h"                  // wrapper class for I2C slave routines
 #include <EEPROM.h>
 
+
 #define ledPin 1
 
 #define motorPin 4
 #define cwCcwPin 3                      //cant use pin 5
+#define BIGLED 1
 
 void setup() {
   // put your setup code here, to run once:
@@ -62,7 +64,13 @@ void loop() {
         power = 250;
       }
       analogWrite(motorPin,power);
-      
+/*    } else if(byteCommand == 0x01) {
+      byte upperPWMSignal = TinyWireS.receive();
+      int upperPWMValue = upperPWMSignal << 8;
+      byte lowerPWMSignal = TinyWireS.receive();
+      int lowerPWMValue
+*/  } else if(byteCommand == 0x05) {
+      analogWrite(BIGLED, TinyWireS.receive());
     } else if(byteCommand == 0xCE) {            //command to change address
       byte newAddress = TinyWireS.receive();    //new address value
       //Write value

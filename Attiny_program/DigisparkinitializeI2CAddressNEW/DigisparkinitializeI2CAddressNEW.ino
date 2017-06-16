@@ -8,7 +8,7 @@ void setup(){
 void loop(){
 
   //Write value
-  EEPROM.put(0, 0x09);
+  EEPROM.put(0, 0x17);
 
   Blink(1);
 
